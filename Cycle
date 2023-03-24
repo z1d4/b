@@ -1,0 +1,7 @@
+import networkx as nx 
+import matplotlib.pyplot as plt
+graph=nx.DiGraph()
+graph.add_edges_from([("root","A"),("A","B"),("A","C"),("A","D"),("B","E"),("E","F")])
+plt.figure(figsize=(4,4))
+nx.draw(graph) 
+plt.show() 
