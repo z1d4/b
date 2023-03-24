@@ -1,0 +1,18 @@
+import hashlib
+import json
+import datetime
+# Define the transaction data
+transaction_data = {
+'sender': '0x1234567890123456789012345678901234567890',
+'recipient': '0x0987654321098765432109876543210987654321',
+'amount': 10,
+'timestamp': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+'hash': ''
+}
+# Create a hash for the transaction
+transaction_string = json.dumps(transaction_data, sort_keys=True)
+transaction_hash = hashlib.sha256(transaction_string.encode()).hexdigest()
+# Add the hash to the transaction data
+transaction_data['hash'] = transaction_hash
+# Print the transaction data
+print(transaction_data)
