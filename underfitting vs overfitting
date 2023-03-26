@@ -1,0 +1,46 @@
+#overfitting
+import numpy as np
+from tensorflow import keras
+from tensorflow.keras import layers, optimizers
+
+# Generate a simple dataset with random noise
+n_samples = 100
+x_train = np.linspace(-1, 1, n_samples)
+y_train = 2 * x_train + np.random.randn(n_samples) * 0.2
+
+# Add more complexity to the dataset to induce overfitting
+n_extra = 50
+x_extra = np.random.uniform(-1, 1, n_extra)
+y_extra = 2 * x_extra + np.random.randn(n_extra) * 0.2
+x_train = np.concatenate([x_train, x_extra])
+y_train = np.concatenate([y_train, y_extra])
+
+# Define a simple neural network with more capacity than needed
+model = keras.Sequential()
+model.add(layers.Dense(100, input_dim=1, activation='relu'))
+model.add(layers.Dense(100, activation='relu'))
+model.add(layers.Dense(100, activation='relu'))
+model.add(layers.Dense(1, activation='linear'))
+
+# Define a dictionary of different optimizers to use
+optimizers = {
+    'SGD': optimizers.SGD(learning_rate=0.01),
+    'RMSprop': optimizers.RMSprop(learning_rate=0.01),
+    'Adagrad': optimizers.Adagrad(learning_rate=0.01),
+    'Adadelta': optimizers.Adadelta(learning_rate=0.01),
+    'Adam': optimizers.Adam(learning_rate=0.01)
+}
+
+# Train the model using each optimizer and plot the results
+import matplotlib.pyplot as plt
+plt.figure(figsize=(10, 5))
+for i, (name, optimizer) in enumerate(optimizers.items()):
+    model.compile(loss='mean_squared_error', optimizer=optimizer)
+    history = model.fit(x_train, y_train, epochs=100, verbose=0, validation_split=0.2)
+    plt.subplot(2, 3, i+1)
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title(name)
+plt.show()
+
+
