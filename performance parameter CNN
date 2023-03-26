@@ -1,0 +1,16 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.figure(figsize=(8,5))
+plt.plot(pd.DataFrame(history.history))
+plt.grid(True)
+plt.gca().set_ylim(0,1)
+plt.show()
+
+import pandas as pd
+import matplotlib.pyplot as plt
+pd.DataFrame(history.history).plot(figsize=(8,5))
+plt.grid(True)
+plt.gca().set_ylim(0,1)
+plt.show()
+
+But you need history just like real life
