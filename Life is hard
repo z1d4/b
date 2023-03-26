@@ -1,0 +1,449 @@
+#practical1
+
+import pandas as pd
+df=pd.read_csv('/content/netflix_titles.csv')
+print(df.head())
+df2=pd.read_csv('/content/netflix_titles.csv',header=None,skiprows=1)
+df2.head()
+df3=pd.read_csv('/content/netflix_titles.csv',skipfooter=1)
+df3.tail() 
+
+
+import matplotlib.pyplot as plt
+import numpy as np
+df.groupby('type').size().plot(kind='pie',autopct='%1.0f%%')
+
+df.groupby('release_year').size().plot(kind='line') 
+
+
+
+...........................................................................................................................................................................................................................................
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+opeartion of tensor and matrix ........
+
+# practical 2 tenser and matrix operation
+
+import numpy as np
+a=np.array([[1,2,3],[4,5,6],[7,8,9]])
+print(a)
+
+b=np.ones((3,3))
+print(b)
+
+sum=np.add(a,b)
+print(sum)
+
+diff=np.subtract(a,b)
+print(diff)
+
+mul=np.dot(b,a)
+print(mul)
+
+import tensorflow as tf
+m=tf.constant([[1,2,3],[4,5,6],[7,8,9]],shape=(3,3))
+print(m)
+##1d tensor demnsion
+
+import tensorflow as tf
+n=tf.constant([[10,20,30],[40,50,60],[70,80,90]],shape=(3,3))
+print(n)
+
+add1=tf.add(m,n)
+print(add1)
+
+mul1=tf.multiply(n,m)
+print(mul1)
+
+mat=tf.matmul(m,n)
+print(mat)
+
+rmax1=tf.reduce_max(m)
+rmax2=tf.reduce_max(n)
+print(rmax1,rmax2)
+
+arg=tf.math.argmax(n)
+print(arg)
+#the argument that gives the maximum value from a target function. 
+
+
+
+............................................................................................................................................................................................................................................
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+prac3&&&5
+implement MLP using tensor flow.(3)
+Write a program to implement convolution neural network with various layers.(5)
+
+
+import tensorflow as tf
+from tensorflow import keras
+print(tf.__version__)
+fashion=keras.datasets.fashion_mnist;
+fashion
+(x_train_full,y_train_full),(x_test,y_test)=fashion.load_data();
+print(x_train_full)
+
+
+print(y_train_full)
+y_train_full.shape
+x_train_full.shape
+x_test.shape
+y_test.shape
+x_valid,x_train = x_train_full[:5000]/255.0,x_train_full[5000:]/255.0;
+y_valid,y_train = y_train_full[:5000],y_train_full[5000:];
+x_train.shape
+y_train.shape
+print(x_train,y_train)
+class_name=["T-shirt/top","trouser","pullover","dress","coat","sandal","short","sneakers","bag","ankle boot"];
+print(class_name[y_train[0]])
+
+model=keras.models.Sequential();
+model.add(keras.layers.Flatten(input_shape=[28,28]));
+model.add(keras.layers.Dense(300,activation="relu"));
+model.add(keras.layers.Dense(100,activation="relu"));
+model.add(keras.layers.Dense(10,activation="softmax"));
+
+model.summary();
+model.layers
+model.layers[0].name
+
+from tensorflow.python import metrics
+model.compile(loss="sparse_categorical_crossentropy",optimizer="sgd",metrics=["accuracy"])
+
+history=model.fit(x_train,y_train,epochs=10,validation_split=0.1)
+
+import pandas as pd
+import matplotlib.pyplot as plt
+pd.DataFrame(history.history).plot(figsize=(8,5));
+plt.grid(True)
+plt.gca().set_ylim(0,1)
+plt.show();
+
+
+import numpy as np
+x_new=x_test[:3]
+y_prob=model.predict(x_new);
+y_prob.round(2)
+y_prod=np.argmax(model.predict(x_new),axis=-1);
+print(y_prod)
+np.array(class_name)[y_prod]
+
+from matplotlib.cbook import flatten
+model=keras.models.Sequential([
+    keras.layers.Conv2D(64,7,activation="relu",padding="same",input_shape=[28,28,1]),
+    keras.layers.MaxPooling2D(2),
+    keras.layers.Conv2D(128,3,activation="relu",padding="same"),
+    keras.layers.Conv2D(128,3,activation="relu",padding="same"),
+    keras.layers.MaxPooling2D(2),
+    keras.layers.Conv2D(256,3,activation="relu",padding="same"),
+    keras.layers.Conv2D(256,3,activation="relu",padding="same"),
+    keras.layers.MaxPooling2D(2),
+    keras.layers.Flatten(),
+    keras.layers.Dense(128,activation="relu"),
+    keras.layers.Dropout(0.5),
+    keras.layers.Dense(66,activation="relu"),
+    keras.layers.Dropout(0.5),
+    keras.layers.Dense(10,activation="softmax")
+]);
+
+
+model.summary(),
+model.compile("adam",loss="sparse_categorical_crossentropy",metrics=["accuracy"])
+
+model.fit(x_train,y_train,epochs=10,validation_data=(x_valid,y_valid))
+
+
+
+...........................................................................................................................................................................................................................................
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+prac4....
+
+Write a program to implement the concept of convolution operation.[No inbuild function is allowed]
+
+
+# prac4
+!pip install Pillow
+import numpy as np
+from PIL import Image, ImageOps
+import matplotlib.pyplot as plt
+
+
+
+img=Image.open("/content/cameraMan.tif")
+img=img.resize(size=(224,224))
+plt.figure(figsize=(6,6))
+plt.imshow(img,cmap='gray')
+
+'''
+Outline =np.array([
+[-1,-1,-1],
+[-1,8,-1],
+[-1,-1,-1],
+])
+sharpen=np.array([
+  [-0,-1,0],
+  [-1,5,-1],
+  [0,-1,0],
+])
+'''
+blur=np.array([
+    [0.065,0.125,0.0625],
+    [0.065,0.125,0.0625],
+    [0.065,0.125,0.0625]
+])
+
+def calculate_target_size(img_size:int, kernel_size: int) -> int:
+    num_pixels =0
+    for i in range(img_size):
+      added=i+kernel_size
+    if added<=img_size:
+      num_pixels += 1
+    return num_pixels
+
+def convolve(img:np.array,kernel:np.array)-> np.array:
+  tgt_size=calculate_target_size(
+      img_size=img.shape[0],
+      kernel_size=kernel.shape[0]
+  )
+
+  k=kernel.shape[0]
+  convolved_img=np.zeros(shape=(tgt_size,tgt_size))
+  for i in range(tgt_size):
+    for j in range(tgt_size):
+      mat-img[i:i+k,j:j+k]
+      convolved_img[i,j]=np.sum(np.multiply(mat.kernel))
+      return convolved_img  
+
+
+  def plot_two_images(img1:np.array,img2:np.array):
+    ax=plt.subplot(1,2,figsize=(12,6))
+    ax[0].imshow(img1,cmap='gray')
+    ax[1].imshow(img2,cmap='gray');
+    img_outlined=convolve(img=np.array(img),kernel=blur)
+    plot_two_images(
+        img1=img,
+        img2=img_outlined
+    )
+
+
+...........................................................................................................................................................................................................................................
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#prac6
+import tensorflow as tf
+from tensorflow.keras import datasets,layers,models
+from tensorflow.keras.utils import to_categorical
+import matplotlib.pyplot as plt
+(train_images,train_labels),(test_images,test_labels)=datasets.cifar10. load_data()
+train_images.shape,train_labels.shape
+model = models.Sequential()
+model.add(layers.Conv2D(32,(3,3),activation='relu',input_shape=(32,32,3
+)))
+model.add(layers.MaxPooling2D((2,2)))
+model.add(layers.Conv2D(64,(3,3),activation='relu'))
+model.add(layers.MaxPooling2D((2,2)))
+model.add(layers.Conv2D(64,(3,3),activation='relu'))
+model.add(layers.Flatten())
+model.add(layers.Dense(64,activation='relu')) 
+model.add(layers.Dense(10))
+model.summary()
+model.compile(optimizer='adam',loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),metrics=['accuracy'])
+history = model.fit(train_images,train_labels,epochs=5,validation_data
+=(test_images,test_labels))
+plt.plot(history.history['accuracy'],label='Accuracy')
+plt.plot(history.history['val_accuracy'],label='Val_accuracy')
+plt.plot(history.history['loss'],label='Loss') 
+plt.plot(history.history['val_loss'],label='Val_loss') 
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy') 
+plt.ylim([0,2]) 
+plt.legend(loc='lower right')
+test_loss,test_acc1=model.evaluate(test_images,test_labels) 
+print(test_acc1)
+model1 = models.Sequential() 
+model1.add(layers.Conv2D(32,(3,3),activation='relu',input_shape=(32,32, 3)))
+model1.add(layers.MaxPooling2D((2,2))) 
+model1.add(layers.Conv2D(64,(3,3),activation='relu')) 
+model1.add(layers.MaxPooling2D((2,2))) 
+model1.add(layers.Conv2D(64,(3,3),activation='relu')) 
+model1.add(layers.Flatten()) 
+model1.add(layers.Dense(64,activation='relu')) 
+model1.add(layers.Dense(10))
+train_images,test_images = train_images/255.0,test_images/255.0
+model1.compile(optimizer='adam',loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),metrics=['accuracy'])
+history = model.fit(train_images,train_labels,epochs=5,validation_data
+=(test_images,test_labels)) 
+plt.plot(history.history['accuracy'],label='Accuracy') 
+plt.plot(history.history['val_accuracy'],label='Val_accuracy') 
+plt.plot(history.history['loss'],label='Loss') 
+plt.plot(history.history['val_loss'],label='Val_loss') 
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy') 
+plt.ylim([0,2]) 
+plt.legend(loc='lower right')
+test_loss,test_acc2=model1.evaluate(test_images,test_labels)
+plt.plot(history.history['accuracy'],label='Without Normalization') 
+plt.plot(history.history['accuracy'],label='With Normalization') 
+plt.xlabel('Epochs')
+plt.ylabel('Loss') 
+plt.ylim([0,2]) 
+plt.legend(loc='lower right')
+print("Without Normalization : {}%".format(test_acc1*100)) 
+print("With Normalization : {}%".format(test_acc2*100))
+
+
+
+...........................................................................................................................................................................................................................................
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#prac7
+
+
+import math
+import yfinance as yf 
+import numpy as np 
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler 
+import matplotlib.pyplot as plt
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+stock_data = yf.download('AAPL', start='2016-01-01', end='2021-10-01') 
+plt.figure(figsize=(15, 8))
+plt.title('Stock Prices History') 
+plt.plot(stock_data['Close']) 
+plt.xlabel('Date') 
+plt.ylabel('Prices ($)')
+close_prices = stock_data['Close'] 
+values =close_prices.values
+training_data_len =math.ceil(len(values)* 0.8)
+
+scaler = MinMaxScaler(feature_range=(0,1)) 
+scaled_data =scaler.fit_transform(values.reshape(-1,1))
+train_data = scaled_data[0: training_data_len,:]
+x_train =[]
+y_train =[]
+for i in range(60, len(train_data)):
+ x_train.append(train_data[i-60:i, 0])
+ y_train.append(train_data[i, 0])
+ x_train, y_train = np.array(x_train),
+np.array(y_train)
+x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1],1)) 
+test_data = scaled_data[training_data_len-60: , : ] 
+x_test = []
+y_test = values[training_data_len:] 
+for i in range(60, len(test_data)):
+ x_test.append(test_data[i-60:i, 0])
+ x_test = np.array(x_test) 
+ x_test = np.reshape(x_test,
+(x_test.shape[0], x_test.shape[1], 1)) 
+model = keras.Sequential()
+model.add(layers.LSTM(100, return_sequences=True, input_shape=(x_train.
+shape[1], 1)))
+model.add(layers.LSTM(100,
+return_sequences=False))
+model.add(layers.Dense(25))
+model.add(layers.Dense(1)) 
+model.summary() 
+
+
+
+...........................................................................................................................................................................................................................................
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+prac8
+
+
+Write a program to show the role of different optimization algorithm for overfitting and underfitting.
+
+
+...........................................................................................................................................................................................................................................
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+#prac9
+import tensorflow as tf
+from tensorflow import keras
+
+
+(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+
+# Normalize the pixel values
+x_train = x_train / 255.0
+x_test = x_test / 255.0
+
+
+model = keras.Sequential([
+    keras.layers.Flatten(input_shape=(28, 28)),
+    keras.layers.Dense(128, activation='relu'),
+    keras.layers.Dense(10, activation='softmax')
+])
+
+# Compile the model
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+# Train the model
+model.fit(x_train, y_train, epochs=5)
+
+# Evaluate the model on the test set
+test_loss, test_acc = model.evaluate(x_test, y_test)
+print('Test accuracy:', test_acc)
+
+
+model.save('my_model.h5')
+
+
+...........................................................................................................................................................................................................................................
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#prac10
+
+
+from keras.applications.resnet import ResNet50
+from keras.applications.resnet import preprocess_input, decode_predictions
+from keras.preprocessing import image
+import numpy as np
+import tensorflow as tf
+model = ResNet50(weights='imagenet')
+print(model.summary())
+img_path = '/content/WIN_20190710_16_07_07_Pro.jpg'
+img = tf.keras.utils.load_img(img_path,target_size=(224,224))
+img
+x = tf.keras.utils.img_to_array(img)
+x = np.expand_dims(x,axis=0)
+x = preprocess_input(x)
+pred = model.predict(x)
+print(decode_predictions(pred,top=3)[0])
+from tensorflow.keras.utils import load_img
+from tensorflow.keras.utils import img_to_array
+from keras.applications.vgg16 import preprocess_input
+from keras.applications.vgg16 import decode_predictions
+from keras.applications.vgg16 import VGG16
+model = VGG16()
+print(model.summary())
+image = load_img('/content/WIN_20190710_16_07_07_Pro.jpg', target_size=(224, 224))
+image
+image = img_to_array(image)
+image = image.reshape((1, image.shape[0], image.shape[1], image.shape[2]))
+# prepare the image for the VGG model image = preprocess_input(image)
+model = VGG16()
+yhat = model.predict(image)
+# convert the probabilities to class labels
+label = decode_predictions(yhat)
+label = label[0][0]
+print('%s (%.2f%%)' % (label[1], label[2]*100))
+
+
+
