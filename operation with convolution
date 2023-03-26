@@ -1,0 +1,38 @@
+#convolution operation
+from keras.layers import Convolution2D, MaxPooling2D, Activation
+from keras.models import Sequential
+from numpy import asarray
+import matplotlib.pyplot as plt
+import cv2
+img = cv2.imread('/content/download.JPG',cv2.IMREAD_GRAYSCALE)
+plt.imshow(img, cmap = 'gray')
+plt.show()
+img.shape
+img_batch = img.reshape(1,img.shape[0], img.shape[1],1)
+img_batch.shape
+img_batch.shape[1:]
+model1 = Sequential()
+model1.add(Convolution2D(1,(15,15) , padding = 'valid', input_shape=img_batch.shape[1:]))
+#random weight initilaization
+model1.summary()
+conv_img = model1.predict(img_batch)
+conv_img.shape
+conv_img_show = conv_img.reshape(conv_img.shape[1], conv_img.shape[2])
+print(conv_img_show)
+plt.imshow(conv_img_show, cmap = 'gray')
+plt.show()
+model2 = Sequential()
+model2.add(Convolution2D(1, (15,15) , padding = 'valid', input_shape=img_batch.shape[1:])) # random weight initilaization
+model2.add(Activation('relu'))
+conv_img = model2.predict(img_batch)
+conv_img_show = conv_img.reshape(conv_img.shape[1], conv_img.shape[2])
+plt.imshow(conv_img_show, cmap = 'gray')
+plt.show()
+model4 = Sequential()
+model4.add(Convolution2D(1, (15,15) , padding = 'valid', input_shape=img_batch.shape[1:])) # random weight initilaization model4.add(Activation('relu'))
+model4.add(MaxPooling2D(pool_size=(2,2)))
+model4.summary()
+conv_img = model4.predict(img_batch)
+conv_img_show = conv_img.reshape(conv_img.shape[1], conv_img.shape[2])
+plt.imshow(conv_img_show, cmap = 'gray')
+plt.show()
