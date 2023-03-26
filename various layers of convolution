@@ -1,0 +1,40 @@
+#convolution with various layers
+import tensorflow as tf
+from tensorflow import keras
+tf.__version__
+fashion_mnist=keras.datasets.fashion_mnist
+print(fashion_mnist)
+(x_train_full,y_train_full),(x_test,y_test)=fashion_mnist.load_data();
+#x_train_full.shape
+x_test.shape
+x_validate,x_train=x_train_full[:5000]/255.0,x_train_full[5000:]/255.0
+y_validate,y_train=y_train_full[:5000],y_train_full[5000:]
+x_validate.shape
+
+class_name=["T-shirt/Top","Trouser","pullover","Dress","coat","sandal","shirt","sneaker","bag","Ankleboot"]
+
+model=keras.models.Sequential([
+keras.layers.Conv2D(64,7,activation="relu",padding="same",input_shape=[28,28,1]),
+keras.layers.MaxPooling2D(2),
+keras.layers.Conv2D(128,3,activation="relu",padding="same"),
+keras.layers.Conv2D(128,3,activation="relu",padding="same"),
+keras.layers.MaxPooling2D(2),
+keras.layers.Conv2D(256,3,activation="relu",padding="same"),
+keras.layers.Conv2D(256,3,activation="relu",padding="same"),
+keras.layers.MaxPooling2D(2),
+
+keras.layers.Flatten(),
+keras.layers.Dense(128,activation="relu"),
+keras.layers.Dropout(0.5),
+keras.layers.Dense(64,activation="relu"),
+keras.layers.Dropout(0.5),
+keras.layers.Dense(10,activation="softmax"),
+])
+model.summary()
+
+model.layers[0]
+hidden1=model.layers[1]
+
+hidden1.get_weights()
+model.compile(loss="sparse_categorical_crossentropy",optimizer="adam",metrics=["accuracy"])
+history=model.fit(x_train,y_train,epochs=20,steps_per_epoch=5,validation_data=(x_validate,y_validate))
