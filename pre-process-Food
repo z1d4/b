@@ -1,0 +1,38 @@
+#pre-process
+import pandas as pd
+df=pd.read_csv("/content/Train.csv")
+df
+
+#Disable header and footer of data.
+csv_file=df.to_csv(header=None)
+print(csv_file)Disable header and footer of data.
+csv_file=df.to_csv(header=None)
+print(csv_file)
+
+
+#Plot bar graph, pie chart, line diagram and scatter plot.
+plt.bar(df["Width"],df['Height'])
+plt.show()
+
+plt.scatter(df["Width"],df['Height'])
+plt.show()
+
+plt.plot(df["Width"],df['Height'])
+plt.show()
+
+plt.pie(df['Height'])
+plt.show()
+
+import numpy as np
+plt.bar(df["Width"], 0.4, label = 'Width')
+plt.bar(df["Height"], 0.4, label = 'Height')
+plt.legend()
+plt.show()
+
+
+#Apply filter on the data such as >,<,>=,between ,in and range.
+rslt_df = df[df['Width'] > 70]
+rslt_df.head(10)
+low = [x * 0.01 for x in range(0, 10)]
+low
+x["latitude"].between(2, 4, inclusive = True)
