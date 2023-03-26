@@ -1,0 +1,70 @@
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+
+# Load the CIFAR-10 dataset
+(x_train, y_train), (x_test, y_test) = keras.datasets.cifar10.load_data()
+
+# Normalize the pixel values
+x_train = x_train / 255.0
+x_test = x_test / 255.0
+
+# Define the CNN model
+def build_model():
+    model = keras.Sequential(
+        [
+            layers.Conv2D(32, (3, 3), activation="relu", input_shape=(32, 32, 3)),
+            layers.MaxPooling2D((2, 2)),
+            layers.Conv2D(64, (3, 3), activation="relu"),
+            layers.MaxPooling2D((2, 2)),
+            layers.Conv2D(128, (3, 3), activation="relu"),
+            layers.Flatten(),
+            layers.Dense(64, activation="relu"),
+            layers.Dense(10),
+        ]
+    )
+    return model
+
+# Define a function to train and evaluate the model with different optimization algorithms
+def train_and_evaluate(optimizer_name):
+    # Build the model
+    model = build_model()
+    
+    # Compile the model with the specified optimizer
+    optimizer = getattr(tf.keras.optimizers, optimizer_name)()
+    model.compile(
+        optimizer=optimizer,
+        loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+        metrics=[keras.metrics.SparseCategoricalAccuracy()],
+    )
+
+    # Train the model for 50 epochs
+    history = model.fit(x_train, y_train, epochs=50, validation_data=(x_test, y_test), verbose=0)
+
+    # Plot the training and validation accuracy curves
+    import matplotlib.pyplot as plt
+    plt.plot(history.history["sparse_categorical_accuracy"])
+    plt.plot(history.history["val_sparse_categorical_accuracy"])
+    plt.title(f"{optimizer_name} - Model Accuracy")
+    plt.xlabel("Epoch")
+    plt.ylabel("Accuracy")
+    plt.legend(["train", "val"], loc="upper left")
+    plt.show()
+
+    # Plot the training and validation loss curves
+    plt.plot(history.history["loss"])
+    plt.plot(history.history["val_loss"])
+    plt.title(f"{optimizer_name} - Model Loss")
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
+    plt.legend(["train", "val"], loc="upper left")
+    plt.show()
+
+    # Evaluate the model on the test set
+    test_loss, test_acc = model.evaluate(x_test, y_test, verbose=2)
+    print(f"{optimizer_name} - Test accuracy:", test_acc)
+
+# Train and evaluate the model with different optimization algorithms
+optimizers = ["SGD", "RMSprop", "Adam", "Adagrad"]
+for optimizer in optimizers:
+    train_and_evaluate(optimizer)
