@@ -1,0 +1,86 @@
+#operation related to tensor, matrix and vector.
+#Tensor operation.
+import tensorflow as tf
+import numpy as np
+a=tf.constant([[1,2,3],[4,5,6],[7,8,9]])
+a
+
+b=tf.constant([[3,2,3],[4,5,6],[1,8,2]])
+b
+
+c=tf.add(a,b)
+c
+
+print(tf.matmul(a,b))
+
+print(tf.reduce_max(a))
+
+print(tf.reduce_max(b))
+
+print(tf.reduce_max(b))
+
+print(tf.math.argmax(b))
+
+a=tf.ones([3,3])
+a
+print(tf.nn.softmax(a))
+
+a=tf.zeros([3,3])
+a
+
+A = tf.constant([[1, 2], [3, 4]]);
+B = tf.reshape(A,[4, 1]);
+B
+
+import tensorflow as tf
+a=tf.range(3, 19, 3)
+
+tensor = tf.constant([[1, 2, 3], [4, 5, 6]])
+tf.zeros_like(tensor)
+
+tf.random.shuffle(tensor, seed=2, name=None)
+
+
+#Matrix operation.
+import numpy as np
+mx1 = np.array([[5, 10], [15, 20]])
+mx2 = np.array([[25, 30], [35, 40]])
+print("Matrix1 =\n",mx1)
+print("\nMatrix2 =\n",mx2)
+print ("\nAddition of two matrices: ")
+print (np.add(mx1,mx2))
+print ("\nSubtraction of two matrices: ")
+print (np.subtract(mx1,mx2))
+print ("\nMatrix Division: ")
+print (np.divide(mx1,mx2))
+print ("\nMultiplication of two matrices: ")
+print (np.multiply(mx1,mx2))
+print ("\nThe summation of elements=")
+print (np.sum(mx1))
+print ("\nThe Transpose =")
+print (mx1.T)
+print("\ninner:", np.inner(mx1, mx2))
+print("dot:", np.dot(mx1, mx2))
+det = np.linalg.det(mx1)
+print("\nDeterminant:", np.round(det))
+rank = np.linalg.matrix_rank(mx1)
+print("\nRank:", rank)
+print("\nTrace:", mx1.trace())
+print("Trace:", sum(mx1.diagonal()))
+
+
+#Vector operation.
+import numpy as np
+list1 = [10,20,30,40,50]
+list2 = [11,12,13,14,15]
+vtr1 = np.array(list1)
+vtr2= np.array(list2)
+print("vector1:")
+print(vtr1)
+print("vector 2:")
+print(vtr2)
+print("Addition of two vectors: ",vtr1+vtr2)
+print("Subtraction of two vectors: ",vtr1-vtr2)
+print("Multiplication of two vectors: ",vtr1*vtr2)
+print("Division of two vectors: ",vtr1/vtr2)
+print("Dot product of two vectors: ",vtr1.dot(vtr2) )
